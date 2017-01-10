@@ -1,5 +1,6 @@
 from Tkinter import * #gives us access to everything in the Tkinter class
 import tkMessageBox
+from PIL import Image, ImageTk
 
 
 def buttonpress():
@@ -9,17 +10,43 @@ def buttonpress():
 
 def addtolist():
     entrytxt = entry1.get()
-    listbox1.insert(END, entrytxt)
+    if check4duplicates() == False:
+        listbox1.insert(END, entrytxt)
+        findsize()
     entry1.delete(0,END)
     
 def addtolist2(event):
     entrytxt = entry1.get()
-    listbox1.insert(END, entrytxt)
+    if check4duplicates() == False:
+        listbox1.insert(END, entrytxt)
+        findsize()
     entry1.delete(0,END)
     
 def clearlist(event):
     listbox1.delete(0,END)
+    findsize()
 
+def check4duplicates():
+    names = listbox1.get(0, END)
+    if entry1.get() in names:
+        return True
+    else:
+        return False
+        
+def findsize():
+    label1.config(text=listbox1.size())
+    
+def openfileR():
+    print "open fileR."
+    
+def openfileW():
+    f = open("Readme.txt", 'w')
+    names = listbox1.get(0,END)
+    for i in names:
+        f.write(i+"\n")
+   
+    f.close()    
+    
 
 root = Tk() #gives us a blank canvas object to work with
 root.title("Yung JPstreet")
@@ -42,6 +69,27 @@ listbox1.insert(END, "Bob")
 listbox1.insert(END, "John")
 listbox1.insert(END, "Mary")
 listbox1.insert(END, "Barkevius")
+
+findsize()
+
+image = Image.open('waveysteve.gif')
+image = image.resize((100,100,))
+photo = ImageTk.PhotoImage(image)
+
+label2 = Label(image=photo)
+label2.image = photo # keep a reference!
+label2.grid(row=12, column=0)
+
+menubar = Menu(root)
+filemenu = Menu(menubar, tearoff=0)
+filemenu.add_command(label="Open", command=openfileR)
+filemenu.add_separator()
+filemenu.add_command(label="Save", command=openfileW)
+
+menubar.add_cascade(label="File", menu=filemenu)
+
+root.config(menu=menubar)
+
 
 
 mainloop() #causes the windows to display on the screen until program closes
